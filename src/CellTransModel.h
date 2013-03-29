@@ -13,7 +13,7 @@ using namespace std;
 #define CELL_TYPE_NORMAL 0
 #define CELL_TYPE_INPUT 1
 #define CELL_TYPE_OUTPUT 2
-#define CELL_TYPE_SWITCH 1
+#define CELL_TYPE_SWITCH 3
 
 typedef struct Cell {
 	int type;
@@ -43,6 +43,7 @@ private:
 	double *CellOut;
 	int n,m;
 	string err;
+	bool isSimOn;
 public:
 	CellTransModel();
 	CellTransModel(int _n, int _m);
@@ -56,6 +57,14 @@ public:
 	}
 	void resetModel();
 	bool initialModel(int _n, int _m, double _cap=10, double _s=0.5);
+	bool setCell(int i, int _type, double _cap, double _s);
+	bool setLinks(int const _type[], int const _cells[][], double const _p[]);
+	bool setLinkProportion(int i, double _p);
+	bool startSim(double const _len[], int const _acc[]);
+	bool sim(double dt, int steps);
+	bool changeAccess(int i, int _acc);
+	bool changeAccesses(int const _acc[]);
+	bool getCurrentLengths(double _len[]) const;
 };
 
 #endif /* CELLTRANSMODEL_H_ */
