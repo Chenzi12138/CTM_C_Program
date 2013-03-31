@@ -23,14 +23,16 @@ typedef struct Cell {
 	int access;
 }CELL;
 
-#define LINK_TYPE_STRAIGHT 0
-#define LINK_TYPE_MERGE 1
-#define LINK_TYPE_DIVERGE 2
+//#define LINK_TYPE_STRAIGHT 0
+//#define LINK_TYPE_MERGE 1
+//#define LINK_TYPE_DIVERGE 2
 
 typedef struct Link {
-	int type;
-	int c1,c2,c3;
 	double p;
+	int c1;
+	double p1;
+	int c2;
+	double p2;
 }LINK;
 
 class CellTransModel {
@@ -41,12 +43,12 @@ private:
 	double *CellPosOut;
 	double *CellIn;
 	double *CellOut;
-	int n,m;
+	int n;
 	string err;
 	bool isSimOn;
 public:
 	CellTransModel();
-	CellTransModel(int _n, int _m);
+	CellTransModel(int _n);
 	virtual ~CellTransModel();
 	string getErr() const {return err;}
 	void cleanErr() {err="";}
@@ -56,15 +58,22 @@ public:
 		return t;
 	}
 	void resetModel();
-	bool initialModel(int _n, int _m, double _cap=10, double _s=0.5);
+	bool initialModel(int _n, double _cap=10, double _s=0.5);
 	bool setCell(int i, int _type, double _cap, double _s);
-	bool setLinks(int const _type[], int const _cells[][], double const _p[]);
-	bool setLinkProportion(int i, double _p);
+	bool setLink(int i, double _p, int _c1, double _p1=1, int _c2=0, double _p2=0);
 	bool startSim(double const _len[], int const _acc[]);
-	bool sim(double dt, int steps);
+	bool sim(double dt, int steps=1);
 	bool changeAccess(int i, int _acc);
 	bool changeAccesses(int const _acc[]);
-	bool getCurrentLengths(double _len[]) const;
+	bool getCurrentLengths(double _len[]);
+	void stopSim();
+	bool resumeSim();
+private:
+	void calPosFlows(double dt);
+	void calRealFlows();
+	bool updateCells();
+	double min(double d1, double d2);
+	double mid(double d1, double d2, double d3);
 };
 
 #endif /* CELLTRANSMODEL_H_ */
