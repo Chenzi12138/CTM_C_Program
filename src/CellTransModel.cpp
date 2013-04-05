@@ -104,7 +104,7 @@ bool CellTransModel::initialModel(int _n, double _cap, double _s) {
 		CellIn[i] = 0;
 		CellOut[i] = 0;
 		ListLink[i].p = 1;
-		ListLink[i].c1 = i;
+		ListLink[i].c1 = (i-1)>=0?(i-1):0;
 		ListLink[i].c2 = 0;
 		ListLink[i].p1 = 1;
 		ListLink[i].p2 = 0;
@@ -201,11 +201,15 @@ bool CellTransModel::startSim(double const _len[], int const _acc[]) {
 		case CELL_TYPE_NORMAL:
 		default:
 			if (_len[i]<0) {
-				err = "Negative length of cell "; err+=i; err+="!";
+				ostringstream oss;
+				oss << "Negative length of Cell " << i << "!";
+				err = oss.str();
 				return false;
 			}
 			else if (_len[i]>ListCell[i].capacity) {
-				err = "Negative length of cell "; err+=i; err+="!";
+				ostringstream oss;
+				oss << "Over the capacity of Cell " << i << "!";
+				err = oss.str();
 				return false;
 			}
 			ListCell[i].length = _len[i];
@@ -389,8 +393,10 @@ double CellTransModel::mid(double d1, double d2, double d3) {
 
 bool CellTransModel::updateCells() {
 	for (int i=0;i<n;i++) {
-		if (CellIn[i]>CellPosIn[i] || CellOut[i]>CellPosOut[i]) {
-			err = "Simulation failed with unknown reason!";
+		if (CellIn[i]>CellPosIn[i]+1e-6 || CellOut[i]>CellPosOut[i]+1e-6) {
+			ostringstream oss;
+			oss << "Simulation failed with unknown reason in Cell " << i << "!";
+			err = oss.str();
 			return false;
 		}
 		ListCell[i].length += CellIn[i]-CellOut[i];

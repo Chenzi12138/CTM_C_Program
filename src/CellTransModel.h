@@ -8,6 +8,7 @@
 #ifndef CELLTRANSMODEL_H_
 #define CELLTRANSMODEL_H_
 #include <string>
+#include <sstream>
 using namespace std;
 
 #define CELL_TYPE_NORMAL 0
