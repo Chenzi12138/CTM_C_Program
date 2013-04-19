@@ -6,6 +6,8 @@
  */
 
 #include "CellTransModel.h"
+#include <iostream>
+using namespace std;
 
 CellTransModel::CellTransModel() {
 	// initialize the parameters
@@ -313,7 +315,8 @@ void CellTransModel::calPosFlows(double dt) {
 		switch (ListCell[i].type) {
 		case CELL_TYPE_INPUT:
 			CellPosIn[i] = 0;
-			CellPosOut[i] = ListCell[i].rate*dt;
+			ListCell[i].length += ListCell[i].rate*dt;
+			CellPosOut[i] = ListCell[i].length;
 			break;
 		case CELL_TYPE_OUTPUT:
 			CellPosIn[i] = ListCell[i].rate*dt;
@@ -402,4 +405,14 @@ bool CellTransModel::updateCells() {
 		ListCell[i].length += CellIn[i]-CellOut[i];
 	}
 	return true;
+}
+
+void CellTransModel::print() {
+	for (int i=0;i<n;i++) {
+		cout << "Cell " << i+1 << ": ";
+		cout << "cap " << ListCell[i].capacity << "\t";
+		cout << "length " << ListCell[i].length << "\t";
+		cout << "last in " << CellIn[i] << "\t";
+		cout << "last out " << CellOut[i] << endl;
+	}
 }

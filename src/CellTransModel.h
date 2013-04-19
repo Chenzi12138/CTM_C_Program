@@ -69,6 +69,7 @@ public:
 	bool getCurrentLengths(double _len[]);
 	void stopSim();
 	bool resumeSim();
+	void print();
 private:
 	void calPosFlows(double dt);
 	void calRealFlows();

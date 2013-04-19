@@ -98,6 +98,7 @@ void simOneCycle(CellTransModel &mdl, double c, double g1, double g2, double len
 		t3 = c-g1;
 	}
 
+	// step 1
 	setAccesses(mdl,s1);
 	if (t1>=1) {
 		int sp = (int)floor(t1);
@@ -107,6 +108,7 @@ void simOneCycle(CellTransModel &mdl, double c, double g1, double g2, double len
 	if (t1>0)
 		mdl.sim(t1);
 
+	// step 2
 	setAccesses(mdl,s2);
 	if (t2>=1) {
 		int sp = (int)floor(t2);
@@ -116,6 +118,7 @@ void simOneCycle(CellTransModel &mdl, double c, double g1, double g2, double len
 	if (t2>0)
 		mdl.sim(t2);
 
+	// step 3
 	setAccesses(mdl,s3);
 	if (t3>=1) {
 		int sp = (int)floor(t3);
