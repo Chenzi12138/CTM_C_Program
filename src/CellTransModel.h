@@ -39,9 +39,11 @@ using namespace std;
 
 class CellTransModel {
 private:
-	CtmCell *cells;
-	CtmLink *links;
+	CtmCell *list_cells;
+	CtmLink *list_links;
 	int n_cells,n_links;
+	double *list_pos_in,*list_pos_out,*list_in,*list_out;
+	CtmInfo info;
 public:
 	CellTransModel();
 	virtual ~CellTransModel();
@@ -50,7 +52,7 @@ public:
 //	bool setCell(int i, int _type, double _cap, double _s);
 //	bool setLink(int i, double _p, int _c1, double _p1=1, int _c2=0, double _p2=0);
 //	bool startSim(double const _len[], int const _acc[]);
-//	bool sim(double dt, int steps=1);
+	bool sim(double dt, int steps=1);
 //	bool changeAccess(int i, int _acc);
 //	bool changeAccesses(int const _acc[]);
 //	bool getCurrentLengths(double _len[]);
@@ -58,11 +60,11 @@ public:
 //	bool resumeSim();
 //	void print();
 private:
-//	void calPosFlows(double dt);
-//	void calRealFlows();
-//	bool updateCells();
-//	double min(double d1, double d2);
-//	double mid(double d1, double d2, double d3);
+	void calPosFlows(double dt);
+	void calRealFlows();
+	bool updateCells(double dt);
+	double min(double d1, double d2);
+	double mid(double d1, double d2, double d3);
 };
 
 #endif /* CELLTRANSMODEL_H_ */

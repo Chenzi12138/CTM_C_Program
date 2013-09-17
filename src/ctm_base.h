@@ -15,29 +15,30 @@
 typedef struct ctm_cell {
 	int type;
 	double rate;
-	int cap;
+	double cap;
 	double length;
-	double pos_in, pos_out;
-	double in, out;
+	double delay;
 }CtmCell;
 
-#define LINK_TYPE_STRAIGHT 0
+#define LINK_TYPE_DIRECT 0
 #define LINK_TYPE_MERGE 1
 #define LINK_TYPE_DIVERGE 2
 
 typedef struct ctm_link {
 	int type;
-	CtmCell * cells[3];
-	double p;
+	int cells[3];
+	double ratio;
 	bool access;
 }CtmLink;
 
 class CtmInfo {
 public:
-	static double w_vf;
-	static bool isSimOn;
+	bool is_valid;
+	bool is_sim_on;
+	double vf;
+	double w_vf;
+	double veh_len;
+	double cell_cap;
 };
-double CtmInfo::w_vf = 1;
-bool CtmInfo::isSimOn = false;
 
 #endif /* CTM_BASE_H_ */
