@@ -55,3 +55,42 @@ name           | description
 
     update the lengths and delays of all cells
 
+### Data Model: Lane-Intersection
+
+**Lane**
+
+property         | description
+:----------------|:----------------------------------------------------------
+type:int         | type of lane (normal;entry;exit)
+cap:double       | capacity (veh)
+sat_rate:double  | saturated flow rate (veh/s)
+in_rate:double   | input flow rate (veh/s)
+out_ratio:double | the ratio of output vehicles due to all input ones \[0,1]
+in_cell:int      | index of the input cell
+out_cell:int     | index of the output cell
+o_cell:int       | index of the origin normal cell
+d_cell:int       | index of the destination normal cell
+in_link:int      | index of the input link
+out_link:int     | index of the output link
+
+**Intersection**
+
+property                 | description
+:------------------------|:-----------------------------------------------
+in_lanes:`list<Lane*>`   | list of input lanes
+in_cells:`list<int>`     | list of indices of end cells of input lanes
+out_lanes:`list<Lane*>`  | list of output lanes
+out_cells:`list<int>`    | indices of begin cells of output lanes
+num_cells:`int`          | number of inner cells
+cells_info:`double[][2]` | the information of the inner cells (cap, rate)
+cells:`list<int>`        | indices of the inner cells
+phases:`list<Phase*>`    | the information of the phases
+cur_phase:int            | index of the current phase
+
+**Phase**
+
+property            | description
+:-------------------|:--------------------------
+links_info:`int[7]` | information for the phase \[type,c1\_class,c1\_index,c2\_class,c2\_index,c3\_class,c3\_index]
+links:`int[2]`      | indices of related links \[begin,end]
+

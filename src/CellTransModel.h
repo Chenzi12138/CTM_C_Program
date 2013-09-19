@@ -12,31 +12,6 @@
 #include "ctm_base.h"
 using namespace std;
 
-//#define CELL_TYPE_NORMAL 0
-//#define CELL_TYPE_INPUT 1
-//#define CELL_TYPE_OUTPUT 2
-//#define CELL_TYPE_SWITCH 3
-
-//typedef struct Cell {
-//	int type;
-//	double capacity;
-//	double length;
-//	double rate;
-//	int access;
-//}CELL;
-
-//#define LINK_TYPE_STRAIGHT 0
-//#define LINK_TYPE_MERGE 1
-//#define LINK_TYPE_DIVERGE 2
-
-//typedef struct Link {
-//	double p;
-//	int c1;
-//	double p1;
-//	int c2;
-//	double p2;
-//}LINK;
-
 class CellTransModel {
 private:
 	CtmCell *list_cells;
@@ -44,6 +19,8 @@ private:
 	int n_cells,n_links;
 	double *list_pos_in,*list_pos_out,*list_in,*list_out;
 	CtmInfo info;
+	list<CtmLane *> list_lanes;
+	list<CtmIntersection *> list_ints;
 public:
 	CellTransModel();
 	virtual ~CellTransModel();
