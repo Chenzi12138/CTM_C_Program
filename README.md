@@ -15,7 +15,7 @@ so that the model can handle more complicated phases.
 
 **Data Structure**
 
-*cell*        |
+*cell* struct | description
 :-------------|:----------------------------------------
 type:int      | type of cell (normal;input;output)
 rate:double   | saturated flow rate (veh/s)
@@ -23,7 +23,7 @@ cap:double    | capacity (veh)
 length:double | current number of vehicles within (veh)
 delay:double  | accumulated vehicle delay (veh*s)
 
-*link*        |
+*link* struct | description
 :-------------|:------------------------------------
 type:int      | type of link (direct;merge;diverge)
 cells:int\[3] | indices of two or three cells
