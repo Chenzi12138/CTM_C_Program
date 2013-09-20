@@ -12,271 +12,46 @@ using namespace std;
 
 CellTransModel::CellTransModel() {
     // initialize the parameters
-    list_cells = NULL;
-    list_links = NULL;
-    list_pos_in = NULL;
-    list_pos_out = NULL;
-    list_in = NULL;
-    list_out = NULL;
-    n_cells = 0;
-    n_links = 0;
-    info.is_valid = false;
-    info.is_sim_on = false;
-    info.vf = 10;
-    info.w_vf = 1;
-    info.veh_len = 5;
-    info.cell_cap = 2;
+//    list_cells = NULL;
+//    list_links = NULL;
+//    list_pos_in = NULL;
+//    list_pos_out = NULL;
+//    list_in = NULL;
+//    list_out = NULL;
+//    n_cells = 0;
+//    n_links = 0;
+//    info.is_valid = false;
+//    info.is_sim_on = false;
+//    info.vf = 10;
+//    info.w_vf = 1;
+//    info.veh_len = 5;
+//    info.cell_cap = 2
+	resetSystem(10,10,5,1);
 }
-//
-//CellTransModel::CellTransModel(int _n) {
-//    // initialize the parameters
-//    ListCell = NULL;
-//    ListLink = NULL;
-//    CellPosIn = NULL;
-//    CellPosOut = NULL;
-//    CellIn = NULL;
-//    CellOut = NULL;
-//    err = "";
-//    n = 0;
-//    isSimOn = false;
-//    // initialize model with n cells and m links
-//    initialModel(_n);
-//}
-//
+
 CellTransModel::~CellTransModel() {
-    if(list_cells!=NULL)
-        delete list_cells;
-    if(list_links!=NULL)
-        delete list_links;
-    if(list_pos_in!=NULL)
-        delete list_pos_in;
-    if(list_pos_out!=NULL)
-        delete list_pos_out;
-    if(list_in!=NULL)
-        delete list_in;
-    if(list_out!=NULL)
-        delete list_out;
+	if(list_cells!=NULL)
+		delete list_cells;
+	if(list_links!=NULL)
+		delete list_links;
+	if(list_pos_in!=NULL)
+		delete list_pos_in;
+	if(list_pos_out!=NULL)
+		delete list_pos_out;
+	if(list_in!=NULL)
+		delete list_in;
+	if(list_out!=NULL)
+		delete list_out;
+
+	for (int i=0;i<(int)list_lanes.size();i++)
+		delete list_lanes[i];
+	list_lanes.clear();
+
+	for (int i=0;i<(int)list_ints.size();i++)
+		delete list_ints[i];
+	list_ints.clear();
 }
-//
-//void CellTransModel::resetModel() {
-//    if(ListCell!=NULL) {
-//        delete ListCell;
-//        ListCell = NULL;
-//    }
-//    if(ListLink!=NULL) {
-//        delete ListLink;
-//        ListLink = NULL;
-//    }
-//    if(CellPosIn!=NULL) {
-//        delete CellPosIn;
-//        CellPosIn = NULL;
-//    }
-//    if(CellPosOut!=NULL) {
-//        delete CellPosOut;
-//        CellPosOut = NULL;
-//    }
-//    if(CellIn!=NULL) {
-//        delete CellIn;
-//        CellIn = NULL;
-//    }
-//    if(CellOut!=NULL) {
-//        delete CellOut;
-//        CellOut = NULL;
-//    }
-//    err = "";
-//    n = 0;
-//    isSimOn = false;
-//}
-//
-//bool CellTransModel::initialModel(int _n, double _cap, double _s) {
-//    if (_n<=0) {
-//        err = "Non-positive number of cells!";
-//        return false;
-//    }
-//    resetModel();
-//    n = _n;
-//    ListCell = new CELL[n];
-//    ListLink = new LINK[n];
-//    CellPosIn = new double[n];
-//    CellPosOut = new double[n];
-//    CellIn = new double[n];
-//    CellOut = new double[n];
-//    for (int i=0;i<n;i++) {
-//        ListCell[i].type = CELL_TYPE_NORMAL;
-//        ListCell[i].capacity = _cap;
-//        ListCell[i].length = 0;
-//        ListCell[i].rate = _s;
-//        ListCell[i].access = 1;
-//        CellPosIn[i] = 0;
-//        CellPosOut[i] = 0;
-//        CellIn[i] = 0;
-//        CellOut[i] = 0;
-//        ListLink[i].p = 1;
-//        ListLink[i].c1 = (i-1)>=0?(i-1):0;
-//        ListLink[i].c2 = 0;
-//        ListLink[i].p1 = 1;
-//        ListLink[i].p2 = 0;
-//    }
-//    return true;
-//}
-//
-//bool CellTransModel::setCell(int i, int _type, double _cap, double _s) {
-//    if(n==0) {
-//        err = "No cell in the model yet!";
-//        return false;
-//    }
-//    if (i>=n || i<0) {
-//        err = "Wrong index of cell!";
-//        return false;
-//    }
-//    if (_s<=0) {
-//        err = "Negative maximal flow rate!";
-//        return false;
-//    }
-//    switch (_type) {
-//    case CELL_TYPE_INPUT:
-//        ListCell[i].type = _type;
-//        ListCell[i].rate = _s;
-//        break;
-//    case CELL_TYPE_OUTPUT:
-//        ListCell[i].type = _type;
-//        ListCell[i].rate = _s;
-//        break;
-//    case CELL_TYPE_SWITCH:
-//        if (_cap<=0) {
-//            err = "Negative capacity of cell!";
-//            return false;
-//        }
-//        ListCell[i].type = _type;
-//        ListCell[i].capacity = _cap;
-//        ListCell[i].rate = _s;
-//        break;
-//    case CELL_TYPE_NORMAL:
-//    default:
-//        if (_cap<=0) {
-//            err = "Negative capacity of cell!";
-//            return false;
-//        }
-//        ListCell[i].type = CELL_TYPE_NORMAL;
-//        ListCell[i].capacity = _cap;
-//        ListCell[i].rate = _s;
-//        break;
-//    }
-//    return true;
-//}
-//
-//bool CellTransModel::setLink(int i, double _p, int _c1, double _p1, int _c2, double _p2) {
-//    if(n==0) {
-//        err = "No link in the model yet!";
-//        return false;
-//    }
-//    if (i>=n || i<0) {
-//        err = "Wrong index of link!";
-//        return false;
-//    }
-//    if (_p<=0 || _p>1 || _p1<=0 || _p1>1 || _p2<0 || _p2>1) {
-//        err = "Wrong proportion!";
-//        return false;
-//    }
-//    if (_c1<0 || _c1>=n || _c2<0 || _c2>=n) {
-//        err = "Wrong index of input cell(s)!";
-//        return false;
-//    }
-//    ListLink[i].p = _p;
-//    ListLink[i].c1 = _c1;
-//    ListLink[i].p1 = _p1;
-//    ListLink[i].c2 = _c2;
-//    ListLink[i].p2 = _p2;
-//    return true;
-//}
-//
-//bool CellTransModel::startSim(double const _len[], int const _acc[]) {
-//    if (n==0) {
-//        err = "No cell and/or link in the model yet!";
-//        return false;
-//    }
-//    if (isSimOn) {
-//        err = "The Simulation was started!";
-//        return false;
-//    }
-//    for (int i=0;i<n;i++) {
-//        switch (ListCell[i].type) {
-//        case CELL_TYPE_INPUT:
-//        case CELL_TYPE_OUTPUT:
-//            ListCell[i].length = 0;
-//            break;
-//        case CELL_TYPE_SWITCH:
-//        case CELL_TYPE_NORMAL:
-//        default:
-//            if (_len[i]<0) {
-//                ostringstream oss;
-//                oss << "Negative length of Cell " << i << "!";
-//                err = oss.str();
-//                return false;
-//            }
-//            else if (_len[i]>ListCell[i].capacity) {
-//                ostringstream oss;
-//                oss << "Over the capacity of Cell " << i << "!";
-//                err = oss.str();
-//                return false;
-//            }
-//            ListCell[i].length = _len[i];
-//            break;
-//        }
-//        if (ListCell[i].type==CELL_TYPE_SWITCH) {
-//            if(_acc[i]!=0)
-//                ListCell[i].access = 1;
-//            else
-//                ListCell[i].access = 0;
-//        }
-//    }
-//    isSimOn = true;
-//    return true;
-//}
-//
-//bool CellTransModel::changeAccess(int i, int _acc) {
-//    if (i>=n || i<0) {
-//        err = "Wrong index of cell!";
-//        return false;
-//    }
-//    else if (ListCell[i].type != CELL_TYPE_SWITCH) {
-//        err = "This cell is not controlled by signals!";
-//        return false;
-//    }
-//    if (_acc!=0)
-//        ListCell[i].access = 1;
-//    else
-//        ListCell[i].access = 0;
-//    return true;
-//}
-//
-//bool CellTransModel::changeAccesses(int const _acc[]) {
-//    if(n==0) {
-//        err = "No cell in the model yet!";
-//        return false;
-//    }
-//    for (int i=0;i<n;i++) {
-//        if (ListCell[i].type == CELL_TYPE_SWITCH) {
-//            if (_acc[i]!=0)
-//                ListCell[i].access = 1;
-//            else
-//                ListCell[i].access = 0;
-//        }
-//    }
-//    return true;
-//}
-//
-//bool CellTransModel::getCurrentLengths(double _len[]) {
-//    if(n==0) {
-//        err = "No cell in the model yet!";
-//        return false;
-//    }
-//    for (int i=0;i<n;i++) {
-//        _len[i] = ListCell[i].length;
-//    }
-//    return true;
-//}
-//
+
 bool CellTransModel::sim(double dt, int steps) {
     if (!info.is_sim_on) {
 //        err = "The Simulation has not been started!";
@@ -298,24 +73,7 @@ bool CellTransModel::sim(double dt, int steps) {
     }
     return true;
 }
-//
-//void CellTransModel::stopSim() {
-//    isSimOn = false;
-//}
-//
-//bool CellTransModel::resumeSim() {
-//    if (n==0) {
-//        err = "No cell and/or link in the model yet!";
-//        return false;
-//    }
-//    if (isSimOn) {
-//        err = "The Simulation was started!";
-//        return false;
-//    }
-//    isSimOn = true;
-//    return true;
-//}
-//
+
 void CellTransModel::calPosFlows(double dt) {
     for (int i=0;i<n_cells;i++) {
         list_in[i] = 0;
@@ -420,13 +178,101 @@ bool CellTransModel::updateCells(double dt) {
     }
     return true;
 }
-//
-//void CellTransModel::print() {
-//    for (int i=0;i<n;i++) {
-//        cout << "Cell " << i+1 << ": ";
-//        cout << "cap " << ListCell[i].capacity << "\t";
-//        cout << "length " << ListCell[i].length << "\t";
-//        cout << "last in " << CellIn[i] << "\t";
-//        cout << "last out " << CellOut[i] << endl;
-//    }
-//}
+
+void CellTransModel::resetSystem(double vf,
+		double w,
+		double veh_len,
+		double pos_dt) {
+	if(list_cells!=NULL)
+		delete list_cells;
+	if(list_links!=NULL)
+		delete list_links;
+	if(list_pos_in!=NULL)
+		delete list_pos_in;
+	if(list_pos_out!=NULL)
+		delete list_pos_out;
+	if(list_in!=NULL)
+		delete list_in;
+	if(list_out!=NULL)
+		delete list_out;
+	n_cells = 0;
+	n_links = 0;
+
+	info.is_valid = false;
+	info.is_sim_on = false;
+	info.vf = vf;
+	info.w_vf = w/vf;
+	info.veh_len = veh_len;
+	info.cell_cap = vf*pos_dt/veh_len;
+
+	for (int i=0;i<(int)list_lanes.size();i++)
+		delete list_lanes[i];
+	list_lanes.clear();
+
+	for (int i=0;i<(int)list_ints.size();i++)
+		delete list_ints[i];
+	list_ints.clear();
+}
+
+bool CellTransModel::addLane(int type,
+		double cap,
+		double sat_rate,
+		double in_rate,
+		double out_ratio) {
+	if (info.is_sim_on) {
+		return false;
+	}
+
+	CtmLane * l = new CtmLane();
+	l->type = type;
+	bool isValid = false;
+	switch (type) {
+	case LANE_TYPE_NORMAL:
+		if (cap<=0)
+			break;
+		else if (sat_rate <= 0)
+			break;
+		else if (in_rate < 0)
+			break;
+		else if (out_ratio<0 || out_ratio>1)
+			break;
+		isValid = true;
+		l->cap = cap;
+		l->sat_rate = sat_rate;
+		l->in_rate = in_rate;
+		l->out_ratio = out_ratio;
+		break;
+	case LANE_TYPE_ENTRY:
+		if (cap<=0)
+			break;
+		else if (sat_rate <= 0)
+			break;
+		else if (in_rate < 0)
+			break;
+		isValid = true;
+		l->cap = cap;
+		l->sat_rate = sat_rate;
+		l->in_rate = in_rate;
+		l->out_ratio = 0;
+		break;
+	case LANE_TYPE_EXIT:
+		isValid = true;
+		l->cap = 0;
+		l->sat_rate = std::numeric_limits<double>::max();
+		l->in_rate = 0;
+		l->out_ratio = 1;
+		break;
+	default:
+		break;
+	}
+
+	if (isValid) {
+		list_lanes.push_back(l);
+		info.is_valid = false;
+		return true;
+	}
+	else {
+		delete l;
+		return false;
+	}
+}

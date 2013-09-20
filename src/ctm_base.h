@@ -7,7 +7,7 @@
 
 #ifndef CTM_BASE_H_
 #define CTM_BASE_H_
-#include <list>
+#include <vector>
 using namespace std;
 
 #define CELL_TYPE_NORMAL 0
@@ -48,6 +48,7 @@ public:
 #define LANE_TYPE_EXIT 2
 
 class CtmLane {
+public:
 	int type;
 	double cap;
 	double sat_rate;
@@ -62,21 +63,23 @@ class CtmLane {
 };
 
 class CtmPhase {
+public:
 	int info[7];
 	int head;
 	int tail;
 };
 
 class CtmIntersection {
-	list<CtmLane *> in_lanes;
-	list<CtmLane *> out_lanes;
+public:
+	vector<CtmLane *> in_lanes;
+	vector<CtmLane *> out_lanes;
 	int num_cells;
 	double ** cells_info;
-	list<CtmPhase *> phases;
+	vector<CtmPhase *> phases;
 	int cur_phase;
-	list<int> in_cells;
-	list<int> out_cells;
-	list<int> cells;
+	vector<int> in_cells;
+	vector<int> out_cells;
+	vector<int> cells;
 };
 
 #endif /* CTM_BASE_H_ */

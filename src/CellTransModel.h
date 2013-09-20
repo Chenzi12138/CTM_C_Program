@@ -19,23 +19,14 @@ private:
 	int n_cells,n_links;
 	double *list_pos_in,*list_pos_out,*list_in,*list_out;
 	CtmInfo info;
-	list<CtmLane *> list_lanes;
-	list<CtmIntersection *> list_ints;
+	vector<CtmLane *> list_lanes;
+	vector<CtmIntersection *> list_ints;
 public:
 	CellTransModel();
 	virtual ~CellTransModel();
-//	void resetModel();
-//	bool initialModel(int _n, double _cap=10, double _s=0.5);
-//	bool setCell(int i, int _type, double _cap, double _s);
-//	bool setLink(int i, double _p, int _c1, double _p1=1, int _c2=0, double _p2=0);
-//	bool startSim(double const _len[], int const _acc[]);
 	bool sim(double dt, int steps=1);
-//	bool changeAccess(int i, int _acc);
-//	bool changeAccesses(int const _acc[]);
-//	bool getCurrentLengths(double _len[]);
-//	void stopSim();
-//	bool resumeSim();
-//	void print();
+	void resetSystem(double vf, double w, double veh_len, double pos_dt);
+	bool addLane(int type, double cap, double sat_rate, double in_rate, double out_ratio);
 private:
 	void calPosFlows(double dt);
 	void calRealFlows();

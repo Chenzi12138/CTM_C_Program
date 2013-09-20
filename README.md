@@ -85,7 +85,7 @@ num_cells:`int`          | number of inner cells
 cells_info:`double[][2]` | the information of the inner cells (cap, rate)
 cells:`list<int>`        | indices of the inner cells
 phases:`list<Phase*>`    | the information of the phases
-cur_phase:int            | index of the current phase
+cur_phase:`int`          | index of the current phase
 
 **Phase**
 
@@ -93,4 +93,20 @@ property            | description
 :-------------------|:--------------------------
 links_info:`int[7]` | information for the phase \[type,c1\_class,c1\_index,c2\_class,c2\_index,c3\_class,c3\_index]
 links:`int[2]`      | indices of related links \[begin,end]
+
+### Reset and add lanes
+
+1. `resetSystem`
+
+    When the system is reset, the lanes, intersections, cells and links should be all erased. All involved resources should be released.
+
+2. `addLane`
+
+    A lane is added with its type, capacity, saturated flow rate, input flow rate and output ratio.
+    
+    For the normal lane, all parameters should be specified by the caller, the capacity, the saturated flow rate are positive, the input flow rate is non-negative, and the output ratio should be inside the region `[0,1]`.
+    
+    For the entry lane, the output ratio is  always set to 0 no matter which value is given, the capacity, the saturated flow rate are positive, and the input flow rate is non-negative.
+    
+    For the exit lane, all parameters given by the caller are ignored, the capacity, the input flow rate are both 0, the saturated flow rate is infinite, and the output ratio is 1.
 
