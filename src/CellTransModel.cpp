@@ -214,13 +214,13 @@ void CellTransModel::resetSystem(double vf,
 	list_ints.clear();
 }
 
-bool CellTransModel::addLane(int type,
+int CellTransModel::addLane(int type,
 		double cap,
 		double sat_rate,
 		double in_rate,
 		double out_ratio) {
 	if (info.is_sim_on) {
-		return false;
+		return -1;
 	}
 
 	CtmLane * l = new CtmLane();
@@ -269,10 +269,32 @@ bool CellTransModel::addLane(int type,
 	if (isValid) {
 		list_lanes.push_back(l);
 		info.is_valid = false;
-		return true;
+		return list_lanes.size()-1;
 	}
 	else {
 		delete l;
-		return false;
+		return -1;
 	}
+}
+
+int CellTransModel::addIntersection(int n_in,int *in_lanes,
+            int n_out,int *out_lanes,
+            int n_inner,double **inner_cells) {
+	if (info.is_sim_on) {
+			return -1;
+		}
+
+	CtmIntersection * l = new CtmIntersection();
+	for (int i=0;i<n_in;i++)
+		l->in_lanes.push_back(list_lanes[in_lanes[i]]);
+	for (int i=0;i<n_out;i++)
+		l->out_lanes.push_back(list_lanes[out_lanes[i]]);
+	for (int i=0;i<n_inner;i++) {
+		CtmInnerCell * c = new CtmInnerCell(inner_cells[i][0],inner_cells[i][1]);
+		l->inner_cells.push_back(c);
+	}
+
+	list_ints.push_back(l);
+	info.is_valid = false;
+	return list_ints.size()-1;
 }

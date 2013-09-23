@@ -62,6 +62,21 @@ public:
 	int out_link;
 };
 
+class CtmInnerCell {
+public:
+	double cap;
+	double sat_rate;
+	int index;
+	CtmInnerCell() {
+		cap = 0; sat_rate = 0; index = 0;
+	}
+	CtmInnerCell(double _cap,double _rate) {
+		cap = _cap;
+		sat_rate = _rate;
+		index = 0;
+	}
+};
+
 class CtmPhase {
 public:
 	int info[7];
@@ -74,12 +89,19 @@ public:
 	vector<CtmLane *> in_lanes;
 	vector<CtmLane *> out_lanes;
 	int num_cells;
-	double ** cells_info;
+	vector<CtmInnerCell *> inner_cells;
 	vector<CtmPhase *> phases;
 	int cur_phase;
 	vector<int> in_cells;
 	vector<int> out_cells;
-	vector<int> cells;
+	~CtmIntersection() {
+		for (int i=0;i<(int)inner_cells.size();i++)
+			delete inner_cells[i];
+		inner_cells.clear();
+		for (int i=0;i<(int)phases.size();i++)
+			delete phases[i];
+		phases.clear();
+	}
 };
 
 #endif /* CTM_BASE_H_ */
