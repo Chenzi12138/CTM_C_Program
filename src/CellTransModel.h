@@ -14,10 +14,9 @@ using namespace std;
 
 class CellTransModel {
 private:
-    CtmCell *list_cells;
-    CtmLink *list_links;
-    int n_cells,n_links;
-    double *list_pos_in,*list_pos_out,*list_in,*list_out;
+    vector<CtmCell *> list_cells;
+    vector<CtmLink *> list_links;
+    vector<double> list_pos_in,list_pos_out,list_in,list_out;
     CtmInfo info;
     vector<CtmLane *> list_lanes;
     vector<CtmIntersection *> list_ints;
@@ -31,12 +30,16 @@ public:
     int addIntersection(int n_in,int *in_lanes,
             int n_out,int *out_lanes,
             int n_inner,double **inner_cells);
+    bool addPhase(int index,int n_links,double info[][8]);
+    bool buildCTM();
 private:
     void calPosFlows(double dt);
     void calRealFlows();
     bool updateCells(double dt);
     double min(double d1, double d2);
     double mid(double d1, double d2, double d3);
+    void modelingLane(CtmLane *l);
+    void modelingIntersection(CtmIntersection *l);
 };
 
 #endif /* CELLTRANSMODEL_H_ */

@@ -60,6 +60,8 @@ public:
 	int d_cell;
 	int in_link;
 	int out_link;
+	int getHeadCell() const {return (type==LANE_TYPE_EXIT)?out_cell:o_cell;}
+	int getTailCell() const {return (type==LANE_TYPE_EXIT)?out_cell:d_cell;}
 };
 
 class CtmInnerCell {
@@ -68,27 +70,37 @@ public:
 	double sat_rate;
 	int index;
 	CtmInnerCell() {
-		cap = 0; sat_rate = 0; index = 0;
+		cap = 0; sat_rate = 0; index = -1;
 	}
 	CtmInnerCell(double _cap,double _rate) {
 		cap = _cap;
 		sat_rate = _rate;
-		index = 0;
+		index = -1;
 	}
 };
 
+typedef struct ctm_link_info {
+	int type;
+	double ratio;
+	int c1s;
+	int c1i;
+	int c2s;
+	int c2i;
+	int c3s;
+	int c3i;
+}CtmLinkInfo;
+
 class CtmPhase {
 public:
-	int info[7];
-	int head;
-	int tail;
+	vector<CtmLinkInfo> info;
+	int head_link;
+	int tail_link;
 };
 
 class CtmIntersection {
 public:
 	vector<CtmLane *> in_lanes;
 	vector<CtmLane *> out_lanes;
-	int num_cells;
 	vector<CtmInnerCell *> inner_cells;
 	vector<CtmPhase *> phases;
 	int cur_phase;
