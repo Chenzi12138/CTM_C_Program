@@ -531,3 +531,107 @@ void CellTransModel::modelingIntersection(CtmIntersection *l) {
 	}
 	return;
 }
+
+bool CellTransModel::checkCells() {
+	if(info.is_valid) {
+		for(int i=0;i<(int)list_cells.size();i++) {
+			if(list_cells[i]->length<0 || list_cells[i]->length>list_cells[i]->cap)
+				return false;
+		}
+		return true;
+	}
+	else
+		return false;
+}
+
+bool CellTransModel::checkPhases() {
+	if(info.is_valid) {
+		for(int i=0;i<(int)list_ints.size();i++) {
+			if(list_ints[i]->cur_phase<0 ||
+					list_ints[i]->cur_phase>=(int)list_ints[i]->phases.size())
+				return false;
+		}
+		return true;
+	}
+	else
+		return false;
+}
+
+bool CellTransModel::startSim() {
+	if(!info.is_valid)
+		return false;
+	if(info.is_sim_on)
+		return true;
+	if(checkCells()&&checkPhases()) {
+		info.is_sim_on = true;
+		return true;
+	}
+	else
+		return false;
+}
+
+bool CellTransModel::setLaneQueue(int i,double x) {
+	if(!info.is_valid)
+		return false;
+	if(info.is_sim_on)
+		return false;
+	if(i<0 || i>=(int)list_lanes.size())
+		return false;
+	if(list_lanes[i]->type==LANE_TYPE_EXIT)
+		return true;
+
+	CtmLane * l = list_lanes[i];
+	x = (x>0)?x:0; x = (x<l->cap)?x:l->cap;
+	int n = l->d_cell-l->o_cell+1;
+	for (int j=0;j<n;j++) {
+		list_cells[l->o_cell+j]->length = x/n;
+	}
+	return true;
+}
+
+bool CellTransModel::setIntersectionPhase(int i,int p) {
+	if(!info.is_valid)
+		return false;
+//	if(info.is_sim_on)
+//		return false;
+	if(i<0 || i>=(int)list_ints.size())
+		return false;
+
+	CtmIntersection *l = list_ints[i];
+	p = (p>0)?p:0;
+	p = (p<(int)l->phases.size())?p:((int)l->phases.size()-1);
+	bool acc; CtmPhase *f;
+	for(int j=0;j<(int)l->phases.size();j++) {
+		acc = (j==p);
+		f = l->phases[j];
+		for(int k=f->head_link;k<=f->tail_link;k++) {
+			list_links[k]->access = acc;
+		}
+	}
+	return true;
+}
+
+bool CellTransModel::startSim(const vector<double> &x,const vector<int> &p) {
+	if(!info.is_valid)
+		return false;
+	if(info.is_sim_on)
+		return false;
+	if(x.size()!=list_lanes.size() || p.size()!=list_ints.size())
+		return false;
+
+	for(int i=0;i<(int)list_lanes.size();i++) {
+		setLaneQueue(i,x[i]);
+	}
+	for(int i=0;i<(int)list_ints.size();i++) {
+		setIntersectionPhase(i,p[i]);
+	}
+	info.is_sim_on = true;
+	return true;
+}
+
+bool CellTransModel::stopSim() {
+	if(!info.is_valid)
+		return false;
+	info.is_sim_on = false;
+	return true;
+}

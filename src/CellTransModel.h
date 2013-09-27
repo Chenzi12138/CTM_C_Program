@@ -32,6 +32,13 @@ public:
             int n_inner,double **inner_cells);
     bool addPhase(int index,int n_links,double info[][8]);
     bool buildCTM();
+    bool checkCells();
+    bool checkPhases();
+    bool startSim();
+    bool setLaneQueue(int i,double x);
+    bool setIntersectionPhase(int i,int p);
+    bool startSim(const vector<double> &x,const vector<int> &p);
+    bool stopSim();
 private:
     void calPosFlows(double dt);
     void calRealFlows();
