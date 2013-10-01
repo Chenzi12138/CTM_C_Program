@@ -635,3 +635,85 @@ bool CellTransModel::stopSim() {
 	info.is_sim_on = false;
 	return true;
 }
+
+bool CellTransModel::cleanAllCells() {
+	if(!info.is_valid)
+		return false;
+
+	for(int i=0;i<(int)list_cells.size();i++) {
+		list_cells[i]->length = 0;
+		list_cells[i]->delay = 0;
+	}
+	return true;
+}
+
+bool CellTransModel::modifyLaneInRate(int i,double r) {
+	if(!info.is_valid)
+		return false;
+	if(i<0 || i>=(int)list_lanes.size())
+		return false;
+	if(list_lanes[i]->type==LANE_TYPE_EXIT)
+		return false;
+
+	CtmLane * l = list_lanes[i];
+	r = (r>0)?r:0;
+	l->in_rate = r;
+	list_cells[l->in_cell]->rate = r;
+	return true;
+}
+
+bool CellTransModel::modifyLaneSatRate(int i,double r) {
+	if(!info.is_valid)
+		return false;
+	if(i<0 || i>=(int)list_lanes.size())
+		return false;
+	if(list_lanes[i]->type==LANE_TYPE_EXIT)
+		return false;
+
+	CtmLane * l = list_lanes[i];
+	r = (r>0)?r:0;
+	l->sat_rate = r;
+	for(int j=l->o_cell;j<=l->d_cell;j++)
+		list_cells[j]->rate = r;
+	return true;
+}
+
+bool CellTransModel::modifyLaneOutRatio(int i,double r) {
+	if(!info.is_valid)
+		return false;
+	if(i<0 || i>=(int)list_lanes.size())
+		return false;
+	if(list_lanes[i]->type!=LANE_TYPE_NORMAL)
+		return false;
+
+	CtmLane * l = list_lanes[i];
+	r = (r>0)?r:0; r = (r<1)?r:1;
+	l->out_ratio = r;
+	list_links[l->out_link]->ratio = 1-r;
+	return true;
+}
+
+bool CellTransModel::switchIntersection(int i) {
+	if(!info.is_valid)
+		return false;
+	if(i<0 || i>=(int)list_ints.size())
+		return false;
+
+	CtmIntersection *l = list_ints[i];
+	if(l->phases.size()>0) {
+		int p = l->cur_phase;
+		CtmPhase *f;
+		f = l->phases[p];
+		for(int k=f->head_link;k<=f->tail_link;k++) {
+			list_links[k]->access = false;
+		}
+		p++;
+		p = (p<(int)l->phases.size())?p:0;
+		f = l->phases[p];
+		for(int k=f->head_link;k<=f->tail_link;k++) {
+			list_links[k]->access = true;
+		}
+		l->cur_phase = p;
+	}
+	return true;
+}

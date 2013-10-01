@@ -39,6 +39,12 @@ public:
     bool setIntersectionPhase(int i,int p);
     bool startSim(const vector<double> &x,const vector<int> &p);
     bool stopSim();
+    bool cleanAllCells();
+    bool addInputs(const vector<double> &in);
+    bool modifyLaneInRate(int i,double r);
+    bool modifyLaneSatRate(int i,double r);
+    bool modifyLaneOutRatio(int i,double r);
+    bool switchIntersection(int i);
 private:
     void calPosFlows(double dt);
     void calRealFlows();
