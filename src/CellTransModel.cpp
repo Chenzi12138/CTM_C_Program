@@ -717,3 +717,66 @@ bool CellTransModel::switchIntersection(int i) {
 	}
 	return true;
 }
+
+bool CellTransModel::readCells(vector<double> &tar) {
+	if(!info.is_valid)
+		return false;
+	tar.resize(list_cells.size());
+	for(int i=0;i<(int)list_cells.size();i++)
+		tar[i] = list_cells[i]->length;
+	return true;
+}
+
+bool CellTransModel::readLanes(vector<double> &tar) {
+	if(!info.is_valid)
+		return false;
+	tar.resize(list_lanes.size());
+	for(int i=0;i<(int)list_lanes.size();i++) {
+		tar[i] = 0;
+		if(list_lanes[i]->type==LANE_TYPE_EXIT)
+			continue;
+		for(int j=list_lanes[i]->o_cell;j<=list_lanes[i]->d_cell;j++)
+			tar[i] += list_cells[j]->length;
+	}
+	return true;
+}
+
+bool CellTransModel::readPhases(vector<int> &tar) {
+	if(!info.is_valid)
+		return false;
+	tar.resize(list_ints.size());
+	for(int i=0;i<(int)list_ints.size();i++)
+		tar[i] = list_ints[i]->cur_phase;
+	return true;
+}
+
+bool CellTransModel::readLaneDelays(vector<double> &tar) {
+	if(!info.is_valid)
+		return false;
+	tar.resize(list_lanes.size());
+	for(int i=0;i<(int)list_lanes.size();i++) {
+		tar[i] = 0;
+		if(list_lanes[i]->type==LANE_TYPE_EXIT)
+			continue;
+		for(int j=list_lanes[i]->o_cell;j<=list_lanes[i]->d_cell;j++)
+			tar[i] += list_cells[j]->delay;
+	}
+	return true;
+}
+
+double CellTransModel::readTotalDelay() {
+	vector<double> delays;
+	if(readLaneDelays(delays)) {
+		double total=0;
+		for(int i=0;i<(int)delays.size();i++)
+			total += delays[i];
+		return total;
+	}
+	else
+		return 0;
+}
+
+void CellTransModel::resetDelay() {
+	for (int i=0;i<(int)list_cells.size();i++)
+		list_cells[i]->delay = 0;
+}

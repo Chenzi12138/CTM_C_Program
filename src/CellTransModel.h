@@ -45,6 +45,12 @@ public:
     bool modifyLaneSatRate(int i,double r);
     bool modifyLaneOutRatio(int i,double r);
     bool switchIntersection(int i);
+    bool readCells(vector<double> &tar);
+    bool readLanes(vector<double> &tar);
+    bool readPhases(vector<int> &tar);
+    bool readLaneDelays(vector<double> &tar);
+    double readTotalDelay();
+    void resetDelay();
 private:
     void calPosFlows(double dt);
     void calRealFlows();
