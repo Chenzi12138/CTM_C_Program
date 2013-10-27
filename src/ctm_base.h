@@ -8,6 +8,7 @@
 #ifndef CTM_BASE_H_
 #define CTM_BASE_H_
 #include <vector>
+#include <string>
 using namespace std;
 
 #define CELL_TYPE_NORMAL 0
@@ -49,6 +50,7 @@ public:
 
 class CtmLane {
 public:
+	string id;
 	int type;
 	double cap;
 	double sat_rate;
@@ -99,6 +101,7 @@ public:
 
 class CtmIntersection {
 public:
+	string id;
 	vector<CtmLane *> in_lanes;
 	vector<CtmLane *> out_lanes;
 	vector<CtmInnerCell *> inner_cells;

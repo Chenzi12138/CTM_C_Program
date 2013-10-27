@@ -212,7 +212,8 @@ void CellTransModel::resetSystem(double vf,
 	list_ints.clear();
 }
 
-int CellTransModel::addLane(int type,
+int CellTransModel::addLane(const string &id,
+		int type,
 		double cap,
 		double sat_rate,
 		double in_rate,
@@ -222,6 +223,7 @@ int CellTransModel::addLane(int type,
 	}
 
 	CtmLane * l = new CtmLane();
+	l->id = id;
 	l->type = type;
 	bool isValid = false;
 	switch (type) {
@@ -275,18 +277,24 @@ int CellTransModel::addLane(int type,
 	}
 }
 
-int CellTransModel::addIntersection(int n_in,int *in_lanes,
-            int n_out,int *out_lanes,
-            int n_inner,double **inner_cells) {
+int CellTransModel::addIntersection(vector<string> in_lanes,
+		vector<string> out_lanes,
+        int n_inner,double **inner_cells) {
 	if (info.is_sim_on) {
 			return -1;
 		}
 
 	CtmIntersection * l = new CtmIntersection();
-	for (int i=0;i<n_in;i++)
-		l->in_lanes.push_back(list_lanes[in_lanes[i]]);
-	for (int i=0;i<n_out;i++)
-		l->out_lanes.push_back(list_lanes[out_lanes[i]]);
+	for (int i=0;i<(int)in_lanes.size();i++) {
+		int tmp = getLaneIndexById(in_lanes[i]);
+		if (tmp>=0)
+			l->in_lanes.push_back(list_lanes[tmp]);
+	}
+	for (int i=0;i<(int)out_lanes.size();i++) {
+		int tmp = getLaneIndexById(out_lanes[i]);
+		if (tmp>=0)
+			l->out_lanes.push_back(list_lanes[tmp]);
+	}
 	for (int i=0;i<n_inner;i++) {
 		CtmInnerCell * c = new CtmInnerCell(inner_cells[i][0],inner_cells[i][1]);
 		l->inner_cells.push_back(c);
@@ -297,7 +305,8 @@ int CellTransModel::addIntersection(int n_in,int *in_lanes,
 	return list_ints.size()-1;
 }
 
-bool CellTransModel::addPhase(int index,int n_links,double info[][8]) {
+bool CellTransModel::addPhase(string id,int n_links,double info[][8]) {
+	int index = getIntersectionIndexById(id);
 	if (index<0 || index>=(int)list_ints.size()) {
 		return false;
 	}
@@ -589,6 +598,14 @@ bool CellTransModel::setLaneQueue(int i,double x) {
 	return true;
 }
 
+bool CellTransModel::setLaneQueue(string id,double x) {
+	int i = getLaneIndexById(id);
+	if (i<0)
+		return false;
+	else
+		return setLaneQueue(i,x);
+}
+
 bool CellTransModel::setIntersectionPhase(int i,int p) {
 	if(!info.is_valid)
 		return false;
@@ -609,6 +626,14 @@ bool CellTransModel::setIntersectionPhase(int i,int p) {
 		}
 	}
 	return true;
+}
+
+bool CellTransModel::setIntersectionPhase(string id, int p) {
+	int i = getIntersectionIndexById(id);
+	if (i<0)
+		return false;
+	else
+		return setIntersectionPhase(i,p);
 }
 
 bool CellTransModel::startSim(const vector<double> &x,const vector<int> &p) {
@@ -647,9 +672,10 @@ bool CellTransModel::cleanAllCells() {
 	return true;
 }
 
-bool CellTransModel::modifyLaneInRate(int i,double r) {
+bool CellTransModel::modifyLaneInRate(string id,double r) {
 	if(!info.is_valid)
 		return false;
+	int i = getLaneIndexById(id);
 	if(i<0 || i>=(int)list_lanes.size())
 		return false;
 	if(list_lanes[i]->type==LANE_TYPE_EXIT)
@@ -662,9 +688,10 @@ bool CellTransModel::modifyLaneInRate(int i,double r) {
 	return true;
 }
 
-bool CellTransModel::modifyLaneSatRate(int i,double r) {
+bool CellTransModel::modifyLaneSatRate(string id,double r) {
 	if(!info.is_valid)
 		return false;
+	int i = getLaneIndexById(id);
 	if(i<0 || i>=(int)list_lanes.size())
 		return false;
 	if(list_lanes[i]->type==LANE_TYPE_EXIT)
@@ -678,9 +705,10 @@ bool CellTransModel::modifyLaneSatRate(int i,double r) {
 	return true;
 }
 
-bool CellTransModel::modifyLaneOutRatio(int i,double r) {
+bool CellTransModel::modifyLaneOutRatio(string id,double r) {
 	if(!info.is_valid)
 		return false;
+	int i = getLaneIndexById(id);
 	if(i<0 || i>=(int)list_lanes.size())
 		return false;
 	if(list_lanes[i]->type!=LANE_TYPE_NORMAL)
@@ -693,9 +721,10 @@ bool CellTransModel::modifyLaneOutRatio(int i,double r) {
 	return true;
 }
 
-bool CellTransModel::switchIntersection(int i) {
+bool CellTransModel::switchIntersection(string id) {
 	if(!info.is_valid)
 		return false;
+	int i = getIntersectionIndexById(id);
 	if(i<0 || i>=(int)list_ints.size())
 		return false;
 
