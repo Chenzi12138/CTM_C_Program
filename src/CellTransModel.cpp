@@ -13,20 +13,6 @@ using namespace std;
 
 CellTransModel::CellTransModel() {
     // initialize the parameters
-//    list_cells = NULL;
-//    list_links = NULL;
-//    list_pos_in = NULL;
-//    list_pos_out = NULL;
-//    list_in = NULL;
-//    list_out = NULL;
-//    n_cells = 0;
-//    n_links = 0;
-//    info.is_valid = false;
-//    info.is_sim_on = false;
-//    info.vf = 10;
-//    info.w_vf = 1;
-//    info.veh_len = 5;
-//    info.cell_cap = 2
 	resetSystem(10,10,5,1);
 }
 
@@ -221,6 +207,9 @@ int CellTransModel::addLane(const string &id,
 	if (info.is_sim_on) {
 		return -1;
 	}
+	if (getLaneIndexById(id)+1) {
+		return -1;
+	}
 
 	CtmLane * l = new CtmLane();
 	l->id = id;
@@ -277,14 +266,18 @@ int CellTransModel::addLane(const string &id,
 	}
 }
 
-int CellTransModel::addIntersection(vector<string> in_lanes,
-		vector<string> out_lanes,
-        int n_inner,double **inner_cells) {
+int CellTransModel::addIntersection(string id,const vector<string> &in_lanes,
+		const vector<string> &out_lanes,
+        int n_inner,double inner_cells[][2]) {
 	if (info.is_sim_on) {
 			return -1;
-		}
+	}
+	if (getIntersectionIndexById(id)+1) {
+		return -1;
+	}
 
 	CtmIntersection * l = new CtmIntersection();
+	l->id = id;
 	for (int i=0;i<(int)in_lanes.size();i++) {
 		int tmp = getLaneIndexById(in_lanes[i]);
 		if (tmp>=0)
@@ -591,9 +584,13 @@ bool CellTransModel::setLaneQueue(int i,double x) {
 
 	CtmLane * l = list_lanes[i];
 	x = (x>0)?x:0; x = (x<l->cap)?x:l->cap;
-	int n = l->d_cell-l->o_cell+1;
-	for (int j=0;j<n;j++) {
-		list_cells[l->o_cell+j]->length = x/n;
+	//int n = l->d_cell-l->o_cell+1;
+	CtmCell *c;
+	for (int j=l->d_cell;j>=l->o_cell;j--) {
+		c = list_cells[j];
+		double clen = (x>c->cap)?c->cap:x;
+		c->length = clen;
+		x -= clen;
 	}
 	return true;
 }
@@ -625,6 +622,7 @@ bool CellTransModel::setIntersectionPhase(int i,int p) {
 			list_links[k]->access = acc;
 		}
 	}
+	l->cur_phase = p;
 	return true;
 }
 

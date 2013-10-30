@@ -37,9 +37,9 @@ public:
     		if (list_lanes[i]->id==id) return i;
     	return -1;
     }
-    int addIntersection(vector<string> in_lanes,
-    		vector<string> out_lanes,
-            int n_inner,double **inner_cells);
+    int addIntersection(string id,const vector<string> &in_lanes,
+    		const vector<string> &out_lanes,
+            int n_inner,double inner_cells[][2]);
     CtmIntersection * getIntersectionById(string id) {
     	for (int i=0;i<(int)list_ints.size();i++)
     		if (list_ints[i]->id==id) return list_ints[i];
