@@ -15,10 +15,7 @@ void initialModel(CellTransModel &mdl);
 void startSim(CellTransModel &mdl, double lens[]);
 void printLens(vector<double> lens);
 void simOneCycle(CellTransModel &mdl, double c, double g1, double g2, vector<double> &lens);
-/**
-void setAccesses(CellTransModel &mdl, int acc[]);
-void updateLens(CellTransModel &mdl, double lens[]);
-*/
+void simTest2(CellTransModel &mdl, vector<double> &lens);
 
 int main() {
 	cout << "Hello World!" << endl; // prints Hello World!
@@ -26,7 +23,7 @@ int main() {
 	// testing the CTM in CPU
 	CellTransModel model;
 	initialModel(model);
-	double lens[]= {31,10,40,45,10,42,48,51};
+	double lens[]= {31,40,40,45,40,42,48,51};
 	startSim(model,lens);
 	vector<double> lengths;
 	model.readLanes(lengths);
@@ -38,6 +35,7 @@ int main() {
 	printLens(lengths);
 	simOneCycle(model,c,55,45,lengths);
 	printLens(lengths);
+//	simTest2(model,lengths);
 
 	string str;
 	cin >> str;
@@ -175,16 +173,20 @@ void simOneCycle(CellTransModel &mdl,
 	mdl.readLanes(lens);
 }
 
-/**
-void setAccesses(CellTransModel &mdl, int acc[]) {
-        for (int i=0;i<8;i++)
-                if (!mdl.changeAccess(i*4+3,acc[i]))
-                        cout << mdl.getErr();
-}
+void simTest2(CellTransModel &mdl, vector<double> &lens) {
+	double t1;
 
-void updateLens(CellTransModel &mdl, double lens[]) {
-        double len_cell[40];
-        mdl.getCurrentLengths(len_cell);
-        for (int i=0;i<8;i++)
-                lens[i] = len_cell[i*4+1]+len_cell[i*4+2]+len_cell[i*4+3];
-}*/
+	for(int i=0;i<9;i++) {
+		t1 = 5;
+		if (t1>=1) {
+			int sp = (int)floor(t1);
+			if (!mdl.sim(1.0,sp))
+				cout << "Simulation Error!" << endl;
+			t1 -= sp;
+		}
+		if (t1>1e-6)
+			mdl.sim(t1);
+		mdl.readLanes(lens);
+		printLens(lens);
+	}
+}
